@@ -1,0 +1,225 @@
+import { useEffect, useState } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import { getPublicActivity } from '../lib/supabase'
+
+function formatDateRange(start, end) {
+  if (!start) return '日期待定'
+  const s = new Date(start)
+  const sm = s.getMonth() + 1
+  const sd = s.getDate()
+  if (!end || end === start) return `${sm}/${sd}`
+  const e = new Date(end)
+  const em = e.getMonth() + 1
+  const ed = e.getDate()
+  if (sm === em) return `${sm}/${sd}–${ed}`
+  return `${sm}/${sd}–${em}/${ed}`
+}
+
+function LocationLabel({ tag }) {
+  const config = {
+    zhongtai:  { label: '📍 中台禪寺',   color: '#C9A96E' },
+    tianxiang: { label: '📍 天祥寶塔禪寺', color: '#7FAFC0' },
+    puyi:      { label: `📍 ${import.meta.env.VITE_TEMPLE_NAME}`,   color: '#C0C0C8' },
+    other:     { label: '📍 其他地點',   color: '#9CA3AF' },
+  }
+  const c = config[tag] || config.puyi
+  return (
+    <p style={{ color: c.color, fontSize: '0.85rem', marginBottom: '12px', letterSpacing: '0.05em' }}>
+      {c.label}
+    </p>
+  )
+}
+
+const btnBase = {
+  display: 'inline-block',
+  padding: '6px 16px',
+  borderRadius: '4px',
+  fontSize: '0.82rem',
+  fontWeight: '500',
+  letterSpacing: '0.05em',
+  cursor: 'default',
+  textDecoration: 'none',
+}
+
+function RegistrationButton({ event, large }) {
+  const style = large ? { ...btnBase, padding: '12px 32px', fontSize: '1rem' } : btnBase
+  if (event.status === 'closed') {
+    return <span style={{ ...style, backgroundColor: '#5C1020', color: '#d08090' }}>報名已截止</span>
+  }
+  if (event.offline_registration) {
+    return <span style={{ ...style, backgroundColor: '#4A2A35', color: '#8a9aaa' }}>報名請洽精舍</span>
+  }
+  if (event.locked && event.volunteer_open) {
+    return (
+      <div>
+        <a
+          href={`/?event=${event.event_id}`}
+          style={{ ...style, backgroundColor: '#2E0E1F', color: '#C9A96E', border: '1.5px solid #C9A96E', cursor: 'pointer' }}
+        >
+          義工報名
+        </a>
+        <p style={{ fontSize: '0.78rem', color: '#A0896A', marginTop: '6px', letterSpacing: '0.03em' }}>
+          ＊學員報名已截止，僅開放義工
+        </p>
+      </div>
+    )
+  }
+  if (event.walkin_mode) {
+    return <span style={{ ...style, backgroundColor: '#0F3D2E', color: '#6ecfaa' }}>現場刷卡即可參加，無需事先報名</span>
+  }
+  if (event.kiosk_open === false) {
+    return <span style={{ ...style, backgroundColor: '#2E0E1F', color: '#6a7a8a' }}>敬請期待</span>
+  }
+  if (event.status === 'active') {
+    return (
+      <a
+        href={`/?event=${event.event_id}`}
+        style={{ ...style, backgroundColor: '#2E0E1F', color: '#C9A96E', border: '1.5px solid #C9A96E', cursor: 'pointer' }}
+      >
+        點我報名
+      </a>
+    )
+  }
+  return <span style={{ ...style, backgroundColor: '#2E0E1F', color: '#6a7a8a' }}>尚未開放報名</span>
+}
+
+export default function ActivityDetailPage() {
+  const { id } = useParams()
+  const [event, setEvent] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
+
+  useEffect(() => {
+    getPublicActivity(id).then(({ data, error }) => {
+      if (error || !data) setNotFound(true)
+      else setEvent(data)
+      setLoading(false)
+    })
+  }, [id])
+
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: '#2E0E1F' }}>
+      {/* 返回列 */}
+      <div style={{ backgroundColor: '#220A17', borderBottom: '1px solid #5C1F3D44', padding: '12px 24px' }}>
+        <Link
+          to="/activities"
+          style={{ color: '#C9A96E', fontSize: '0.85rem', letterSpacing: '0.05em', textDecoration: 'none' }}
+        >
+          ← 返回活動列表
+        </Link>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-6 py-10">
+        {loading && (
+          <p style={{ textAlign: 'center', color: '#B0A898', paddingTop: '60px' }}>載入中…</p>
+        )}
+
+        {!loading && notFound && (
+          <div style={{ textAlign: 'center', paddingTop: '60px' }}>
+            <p style={{ color: '#B0A898', marginBottom: '16px' }}>找不到此活動，或活動尚未公開。</p>
+            <Link
+              to="/activities"
+              style={{
+                display: 'inline-block',
+                backgroundColor: '#C9A96E',
+                color: '#2E0E1F',
+                padding: '8px 20px',
+                borderRadius: '4px',
+                textDecoration: 'none',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+              }}
+            >
+              返回活動列表
+            </Link>
+          </div>
+        )}
+
+        {!loading && event && (
+          <>
+            {/* 封面圖 */}
+            {event.cover_image_url && (
+              <div style={{ borderRadius: '8px', overflow: 'hidden', marginBottom: '24px', height: '280px' }}>
+                <img
+                  src={event.cover_image_url}
+                  alt={event.name}
+                  style={{
+                    width: '100%', height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: event.cover_image_position || '50% 50%',
+                  }}
+                />
+              </div>
+            )}
+
+            {/* 地點標籤 */}
+            <LocationLabel tag={event.location_tag} />
+
+            {/* 活動名稱 */}
+            <h1 style={{
+              color: '#F0E8D8',
+              fontSize: '1.5rem',
+              fontWeight: '400',
+              letterSpacing: '0.08em',
+              marginBottom: '8px',
+            }}>
+              {event.name}
+            </h1>
+
+            {/* 金色裝飾線 */}
+            <div style={{ width: '40px', height: '2px', backgroundColor: '#C9A96E', marginBottom: '16px' }} />
+
+            {/* 日期 */}
+            <p style={{ color: '#B0A898', fontSize: '0.9rem', marginBottom: '24px' }}>
+              📅 {formatDateRange(event.date_start, event.date_end)}
+            </p>
+
+            {/* 活動說明 */}
+            {event.description && (
+              <div style={{
+                color: '#D8D0C0',
+                fontSize: '0.95rem',
+                lineHeight: '1.9',
+                whiteSpace: 'pre-wrap',
+                marginBottom: '32px',
+                borderLeft: '2px solid #C9A96E44',
+                paddingLeft: '16px',
+              }}>
+                {event.description}
+              </div>
+            )}
+
+            {/* 相關閱讀 */}
+            {event.related_links?.length > 0 && (
+              <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid rgba(201,169,110,0.2)' }}>
+                <p style={{ color: '#C9A96E', fontSize: '0.8rem', fontWeight: '600', letterSpacing: '0.15em', marginBottom: '12px' }}>
+                  相關閱讀
+                </p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {event.related_links.map((link, i) => (
+                    <li key={i} style={{ marginBottom: '8px' }}>
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: '#D4B896', fontSize: '0.88rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}
+                        onMouseEnter={e => e.currentTarget.style.color = '#C9A96E'}
+                        onMouseLeave={e => e.currentTarget.style.color = '#D4B896'}
+                      >
+                        <span style={{ color: '#C9A96E', fontSize: '0.75rem' }}>▶</span>
+                        {link.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* 報名按鈕 */}
+            <RegistrationButton event={event} large />
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
