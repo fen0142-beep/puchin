@@ -30,11 +30,15 @@ npm run preview   # 本機預覽打包結果
 
 ### SQL 遷移是手動編號的檔案，不是用遷移工具管理
 
-所有 schema 變更都以獨立的 `.sql` 檔存放於 `sql/` 目錄下，執行順序依 `sql/MIGRATION_ORDER.md` 記載（不是依檔名或時間戳排序）。命名慣例：
+所有 schema 變更都以獨立的 `.sql` 檔存放於 `sql/` 目錄下，檔名前綴為 `{階段}_{階段內步驟}_`（例如 `1_1_schema.sql`、`4_01_add_field_types.sql`），依 `sql/MIGRATION_ORDER.md` 記載的階段編號排序即為執行順序。命名慣例：
 - `*_setup.sql` — 功能初始設定
 - `add_*.sql` — 新增欄位／資料表等擴充變更
 - `fix_*.sql` — 修正性補丁（常見於 RLS 修正）
-- `schema.sql` — 基礎資料表，最先執行
+- `1_1_schema.sql` — 基礎資料表，最先執行
+- `cron_*.sql` — 定時任務（不屬於任何階段）
+- `security_*.sql` — 安全修復（不屬於任何階段）
+
+`sql/` 目錄下還有 8 個檔案未被 `MIGRATION_ORDER.md` 記載執行順序、因此維持原檔名未編號：`debug_identity_values.sql`、`fix_cancel_registration_rls.sql`、`fix_friend_registration_rls.sql`、`fix_get_student_by_qr_active.sql`、`fix_recurring_fields_volunteers.sql`、`fix_rls_registrations_anon.sql`、`fix_update_checkin_rls.sql`、`fix_volunteer_event_access.sql`。其中多個定義了前端實際呼叫的 RPC function（見上方 RPC 清單），建置新環境時仍必須額外執行，不能因為沒被編號就略過。
 
 修改 schema 時，請新增一個編號後的 `.sql` 檔，並在 `sql/MIGRATION_ORDER.md` 補上一筆條目 — 不要直接修改舊的遷移檔案，因為那些檔案記錄了實際曾經對正式環境執行過的內容。特別注意 `sql/MIGRATION_ORDER.md` 最後「⚠️ 注意事項」段落：2026-06-05 有一次針對 anon 權限的收緊（移除 `registrations` 的 UPDATE/DELETE、`event_donors` 完全封鎖、`students` 改走 RPC）已直接套用在 Supabase 上，但**這個 `sql/` 目錄底下沒有任何檔案記錄這次變更** — 若要在新環境重建，需要額外執行不在此 repo 中的 `fix_rls_clean.sql` 才能達到一致狀態。
 
@@ -49,7 +53,7 @@ npm run preview   # 本機預覽打包結果
 
 - **活動（Events）**（`events`）具備**動態欄位**（`event_fields` / `event_templates`）— 報名表單是在執行期依據 JSON 欄位 schema 動態產生（欄位型別列舉見 `src/lib/fieldTypes.js`：radio／checkbox／boolean／text／plate／datetime／date／time），並由 `src/components/DynamicForm.jsx` 負責渲染。多場次活動另有 `event_sessions` / `event_session_fields`。
 - **學員（Students）**是事先匯入的（`students` / `student_classes`），以學員證 QR code = 學員編號識別；kiosk 端查詢學員走 `get_student_by_qr` RPC。訪客／親友可在沒有 `student_id` 的情況下報名（`host_student_id` 會將訪客報名記錄連回代報的學員）。
-- **排車系統**（`car_assignments`、`car_members`、`car_leaders`、`car_monks`）是疊加在報名資料之上的另一套排班子系統，依 `direction`（'up'／'down'）區分上下山 — 相關邏輯見 `src/lib/autoArrange.js` / `carrangeHelpers.js` 及後台排車相關頁面。小車報到使用依方向區分的 token（`access_token`）驗證，非 session 登入 — 相關安全性演進歷史見 `fix_car_token_security.sql`。
+- **排車系統**（`car_assignments`、`car_members`、`car_leaders`、`car_monks`）是疊加在報名資料之上的另一套排班子系統，依 `direction`（'up'／'down'）區分上下山 — 相關邏輯見 `src/lib/autoArrange.js` / `carrangeHelpers.js` 及後台排車相關頁面。小車報到使用依方向區分的 token（`access_token`）驗證，非 session 登入 — 相關安全性演進歷史見 `security_fix_car_token_security.sql`。
 - **報名異動紀錄**透過 `logRegistrationChange()` 寫入 `registration_changes`（best-effort，失敗只會 `console.warn`，不會擋住主要寫入流程）。
 
 ### PWA／離線行為

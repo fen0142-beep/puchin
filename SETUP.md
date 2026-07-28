@@ -40,7 +40,7 @@
 
 1. 進入 Supabase Dashboard → 左側選「**SQL Editor**」
 2. 點「**New query**」
-3. 開啟專案裡的 `schema.sql` 檔案，複製全部內容貼進去
+3. 開啟專案裡 `sql/` 目錄下的 `1_1_schema.sql` 檔案，複製全部內容貼進去
 4. 點「**Run**」執行
 5. 執行完成後，用以下查詢確認 6 張資料表都存在：
 

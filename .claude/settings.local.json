@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//tmp/**)",
+      "Bash(grep -oE '`[a-zA-Z0-9_]+\\\\.sql`' MIGRATION_ORDER.md)",
+      "Bash(awk '$1>1')",
+      "Bash(cd *)",
+      "Bash(awk ' *)",
+      "Bash(awk 'NR==651,0 && /;/{print NR\": \"$0; exit}' all.sql)",
+      "Bash(awk 'NR>=651 && /^\\\\\\);|ON CONFLICT/{print NR\": \"$0; if\\($0 ~ /;/\\) exit}' all.sql)",
+      "Bash(awk '-F|' '{ *)",
+      "Bash(python3 *)"
+    ]
+  }
+}
