@@ -780,7 +780,7 @@ SET raw_app_meta_data = jsonb_set(
   '{role}',
   '"volunteer"'
 )
-WHERE email = 'puchin2015@puchin.reg';
+WHERE email = 'puchin2015@gmail.com';
 -- 若用不同 email，請把上面的 email 改成實際填入的
 
 
@@ -788,7 +788,7 @@ WHERE email = 'puchin2015@puchin.reg';
 SELECT email,
        raw_app_meta_data->>'role' AS role
 FROM auth.users
-WHERE email IN ('puchin2015@gmail.com', 'puchin2015@puchin.reg')
+WHERE email IN ('puchin2015@gmail.com', 'hcpucin@gmail.com')
 ORDER BY email;
 -- 應該看到：
 --   nirvana1050408@gmail.com (如果有) | admin
