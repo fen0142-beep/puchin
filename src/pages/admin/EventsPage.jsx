@@ -478,7 +478,7 @@ export default function EventsPage() {
                 value={form.location}
                 onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-                placeholder="例：普宜精舍大殿"
+                placeholder="例：普親精舍禪堂"
               />
             </div>
             <div>
@@ -918,7 +918,7 @@ export default function EventsPage() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
             <div className="px-6 py-4 border-b border-gray-100">
               <h3 className="text-base font-semibold text-gray-800">📋 選擇內建活動模板</h3>
-              <p className="text-xs text-gray-400 mt-1">來源：普宜精舍（共 {DEFAULT_TEMPLATES.length} 個通用活動）</p>
+              <p className="text-xs text-gray-400 mt-1">來源：普親精舍（共 {DEFAULT_TEMPLATES.length} 個通用活動）</p>
             </div>
             <div className="px-6 py-4 max-h-96 overflow-y-auto space-y-1">
               <label className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded px-2 py-1.5 mb-2 border-b pb-2">
@@ -1109,7 +1109,7 @@ export default function EventsPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">地點</label>
                 <input type="text" value={templateForm.location}
                   onChange={e => setTemplateForm(f => ({ ...f, location: e.target.value }))}
-                  placeholder="例：普宜精舍"
+                  placeholder="例：普親精舍"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400" />
               </div>
               <div>
