@@ -51,7 +51,7 @@ export default function EventsPage() {
   const [templateForm, setTemplateForm] = useState(TMPL_DEFAULT)
   const [savingTemplate, setSavingTemplate] = useState(false)
   const [deletingTemplate, setDeletingTemplate] = useState(null)
-  // 區間手動產生
+  // 區間手動產生//
   const [generateTarget, setGenerateTarget] = useState(null)
   const [generateRange, setGenerateRange] = useState({ start: '', end: '' })
   const [generatePreview, setGeneratePreview] = useState([]) // [{date, exists}]
