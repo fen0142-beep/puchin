@@ -64,10 +64,10 @@ async function generateQRCardBlob({ svgId, name, eventName, eventDate, location 
   ctx.textAlign = 'center'
   const fontFamily = '"Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif'
 
-  // 頂部「普宜精舍」
+  // 頂部「普親精舍」
   ctx.fillStyle = '#9ca3af'
   ctx.font = `600 26px ${fontFamily}`
-  ctx.fillText('普 宜 精 舍', W / 2, 70)
+  ctx.fillText('普 親 精 舍', W / 2, 70)
   // 副標
   ctx.fillStyle = '#a78bfa'
   ctx.font = `18px ${fontFamily}`
@@ -2458,7 +2458,7 @@ function FriendSuccessScreen({
 function QRCardPreview({ svgId, regId, name, eventName, eventDate, location }) {
   return (
     <div className="bg-white border-2 border-gray-200 rounded-xl p-4 mx-auto" style={{ maxWidth: 320 }}>
-      <p className="text-center text-kiosk-sm text-gray-400 tracking-widest">普 宜 精 舍</p>
+      <p className="text-center text-kiosk-sm text-gray-400 tracking-widest">普 親 精 舍</p>
       <p className="text-center text-kiosk-sm text-purple-500 mt-1 mb-3">— 親友代報・報到 QR —</p>
       <div className="flex justify-center bg-gray-50 rounded-lg p-2 mb-3">
         <QRCodeSVG id={svgId} value={String(regId)} size={180} level="M" includeMargin />
