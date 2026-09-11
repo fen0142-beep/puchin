@@ -2122,7 +2122,7 @@ function FriendFormScreen({
 
       <div className="bg-white rounded-2xl shadow-md p-5 mb-4 border-l-8 border-purple-600">
         <p className="text-kiosk-xl font-bold text-gray-800">為親友報名</p>
-        <p className="text-kiosk-lg font-bold text-red-700">請至知客室填寫生日、身分證號、緊急聯絡人相關資訊，才算報名完成</p>
+        <p className="text-kiosk-base font-bold text-red-700">請至知客室填寫生日、身分證號、緊急聯絡人相關資訊，才算報名完成</p>
         <p className="text-kiosk-base text-purple-700 font-medium mt-1">{event.name}</p>
       </div>
 
