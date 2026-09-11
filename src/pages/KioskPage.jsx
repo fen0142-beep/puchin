@@ -1827,6 +1827,7 @@ function OverviewScreen({
                 <p className="text-kiosk-sm text-purple-500 mt-3 leading-snug">
                   可幫尚未到場的家人或朋友報名（不影響您自己的報名）。
                   後台會自動標註「{student?.name ?? '您'} 親友」並安排同車。
+                  需要保險，須提供身分證號及生日給精舍
                 </p>
               </>
             )}
