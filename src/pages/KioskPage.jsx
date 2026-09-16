@@ -258,7 +258,7 @@ function isAnswerFilled(field, value) {
   return String(value).trim() !== ''
 }
 
-const OVERVIEW_IDLE_SECONDS = 30   // 總覽畫面閒置幾秒後自動返回
+const OVERVIEW_IDLE_SECONDS = 60   // 總覽畫面閒置幾秒後自動返回
 const FORM_IDLE_SECONDS = 300      // 填表畫面閒置幾秒後自動返回（長者填表需要較多時間）
 const SUCCESS_SECONDS = 3          // 報名成功提示停留秒數
 
