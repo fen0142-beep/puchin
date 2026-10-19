@@ -349,6 +349,8 @@ export default function CheckinPage() {
     if (registration.checked_in_at) {
       setStatus('already')
       setResult({ name, checkedInAt: registration.checked_in_at, registrationId: registration.registration_id })
+   //2026.10.19
+      printDonorTicket({ name, donor: donorRec, donorFields, eventName: event?.name, copies: printCopies })
       startCountdown()
       return
     }
@@ -359,6 +361,8 @@ export default function CheckinPage() {
       refreshStats()
       setStatus('success')
       setResult({ name, registrationId: registration.registration_id })
+   //2026.10.19
+      printDonorTicket({ name, donor: donorRec, donorFields, eventName: event?.name, copies: printCopies })
       startCountdown()
     } else {
       setStatus('error')
