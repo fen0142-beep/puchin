@@ -10,7 +10,7 @@ import {
 } from '../../lib/supabase'
 import CameraScanner from '../../components/CameraScanner'
 
-const IDLE_SECONDS = 5 // 成功/失敗畫面停留秒數
+const IDLE_SECONDS = 8 // 成功/失敗畫面停留秒數
 
 // ── 多場次 helper（與 EventDetailPage 同步）─────────────────
 function timePeriodShort(tp)  { return { morning: '上', afternoon: '下', evening: '晚' }[tp] ?? tp }
